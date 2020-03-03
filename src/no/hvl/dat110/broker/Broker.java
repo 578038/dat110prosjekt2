@@ -11,6 +11,9 @@ import no.hvl.dat110.messagetransport.MessagingServer;
 
 public class Broker extends Stopable { 
 
+	
+	//test
+	
 	private boolean stopable = false;
 	private int maxaccept = 0;
 	
