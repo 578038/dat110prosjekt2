@@ -6,13 +6,10 @@ public class SubscribeMsg extends Message {
 
 	private String topic;
 	
-	public SubscribeMsg(String topic, String user){
+	public SubscribeMsg(String user, String topic){
 		super(MessageType.SUBSCRIBE, user);
 		this.topic = topic;
-	}
-
-
-	
+	}	
 
 	public String getTopic() {
 		return topic;
@@ -22,10 +19,6 @@ public class SubscribeMsg extends Message {
 		this.topic = topic;
 	}
 	
-	
-
-
-
 	@Override
 	public String toString() {
 		return "SubscribeMsg [topic=" + topic + "]";
