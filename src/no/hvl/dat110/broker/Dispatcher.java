@@ -178,30 +178,16 @@ public class Dispatcher extends Stopable {
 		// messages must be sent used the corresponding client session objects
 		
 		Collection<ClientSession> clientsessions = storage.getSessions();
-		//UFERDIG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		
 		
 		for(ClientSession clientsession : clientsessions) {
 		if(storage.subscriptions.get(msg.getTopic()).contains(clientsession.getUser())) {
-			//MessageUtils.send(clientsession.getConnection(), msg);
+			
 			clientsession.send(msg);
 		}
 		}
 		
 	
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		//throw new UnsupportedOperationException(TODO.method());
 
 	}
 }
