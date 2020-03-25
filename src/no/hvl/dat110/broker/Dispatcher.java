@@ -92,7 +92,22 @@ public class Dispatcher extends Stopable {
 		Logger.log("onConnect:" + msg.toString());
 
 		storage.addClientSession(user, connection);
-
+		//user just connected.
+		//if any messages was sent while disconencted, they should be buffered
+		// send any buffered message to user
+		
+	if(storage.getBufferedMessages(user) != null) {
+	
+		
+		Set<Message> messages = storage.getBufferedMessages(user);
+		for (Message message: messages) {
+			storage.getSession(user).send(message);
+		}
+		// clear buffer
+		storage.clearBufferedMessages(user);
+	}
+	
+		
 	}
 
 	// called by dispatch upon receiving a disconnect message
@@ -177,17 +192,35 @@ public class Dispatcher extends Stopable {
 		// topic and message is contained in the subscribe message
 		// messages must be sent used the corresponding client session objects
 		
+		//if client session is null, user is disconnected. Store message in bufferedMessages
+		// instead of sending it storage.bufferMessage(user, msg)
+		
+		
+		
+		String topic = msg.getTopic();
+		
+		Set<String> subscribers = storage.getSubscribers(topic);
+		
 		Collection<ClientSession> clientsessions = storage.getSessions();
 		
+		
+//		for(String user : subscribers) { //hvis bruker er i clients er han connected
+//		if(clientsessions.contains(user)){
+//			storage.getSession(user).send(msg);
+//		}else {
+//			storage.bufferMessage(user, msg);
+//		}
+			
 		
 		for(ClientSession clientsession : clientsessions) {
 		if(storage.subscriptions.get(msg.getTopic()).contains(clientsession.getUser())) {
 			
 			clientsession.send(msg);
 		}
-		}
-		
-	
+		else {
+			storage.bufferMessage(clientsession.getUser(), msg);
+			}
 
+		}
 	}
 }

@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import no.hvl.dat110.common.TODO;
+import no.hvl.dat110.messages.Message;
 import no.hvl.dat110.common.Logger;
 import no.hvl.dat110.messagetransport.Connection;
 
@@ -19,10 +20,14 @@ public class Storage {
 	// maps from user to corresponding client session object
 	
 	protected ConcurrentHashMap<String, ClientSession> clients;
+	
+	
+	protected ConcurrentHashMap<String, Set<Message>> bufferedMessages;
 
 	public Storage() {
 		subscriptions = new ConcurrentHashMap<String, Set<String>>();
 		clients = new ConcurrentHashMap<String, ClientSession>();
+		bufferedMessages =  new ConcurrentHashMap();
 	}
 
 	public Collection<ClientSession> getSessions() {
@@ -34,6 +39,22 @@ public class Storage {
 		return subscriptions.keySet();
 
 	}
+	
+	
+	public void bufferMessage(String user, Message message) {
+		bufferedMessages.get(user).add(message);
+	}
+	
+	public Set<Message> getBufferedMessages(String user){
+		return bufferedMessages.get(user);
+	}
+	
+	public void clearBufferedMessages(String user) {
+		bufferedMessages.get(user).clear();
+	}
+	
+	
+	
 
 	// get the session object for a given user
 	// session object can be used to send a message to the user
@@ -44,6 +65,13 @@ public class Storage {
 
 		return session;
 	}
+	
+	
+	
+	
+	
+	
+	
 
 	public Set<String> getSubscribers(String topic) {
 
@@ -80,7 +108,7 @@ public class Storage {
 
 		// TODO: create topic in the storage
 
-		//Set<String> set = new HashSet<String>();
+		
 		subscriptions.put(topic, new HashSet<>());
 		
 		
@@ -104,9 +132,7 @@ public class Storage {
 	
 		
 		subscriptions.get(topic).add(user);
-		
-//		Set<String> set = subscriptions.get(topic);
-//		set.add(user);
+	
 //		
 //		subscriptions.put(topic, set);
 //		
